@@ -11,5 +11,5 @@ urlpatterns = [
         'create-click/',
         views.create_click,
         name="ClickCollectorCreateClick"
-    ),
+    )
 ]

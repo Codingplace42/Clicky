@@ -31,5 +31,24 @@
 
 {% block javascript %}
 {{block.super}}
+<script>
+  var host = window.location.host
+  var ws = new WebSocket(`ws://${host}/ws/click/`)
 
+  ws.onopen = function(event){
+    console.log('opened', event);
+  }
+
+  ws.onmessage = function(event){
+    console.log('message', event);
+  }
+
+  ws.onclose = function(event){
+    console.log('close', event);
+  }
+
+  ws.onerror = function(event){
+    console.log('error', event);
+  }
+</script>
 {% endblock javascript %}

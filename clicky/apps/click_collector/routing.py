@@ -1,7 +1,11 @@
-from django.urls import re_path
+from django.urls import path
 
 from . import consumers
 
-websocket_urlpatterns = [
-    re_path('ws/click', consumers.ClickConsumer.as_asgi()),
+urlpatterns = [
+    path(
+        'ws/click/',
+        consumers.ClickConsumer.as_asgi(),
+        name="WSClickCollector"
+    ),
 ]
