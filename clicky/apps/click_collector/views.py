@@ -1,16 +1,13 @@
-from django.shortcuts import render, redirect
-from django.views.decorators.http import require_http_methods
+from django.shortcuts import render
+from rest_framework.generics import ListCreateAPIView
 from .models import Click
+from .serializers import ClickSerializer
 
 
 def click_collector_index(request):
-    context = {
-        'clicks': Click.objects.order_by('-timestamp')[:5]
-    }
-    return render(request, 'collector/index.html', context)
+    return render(request, 'collector/index.html')
 
 
-@require_http_methods(["POST", ])
-def create_click(request):
-    Click.objects.create()
-    return redirect("ClickCollectorIndex")
+class ClickAPI(ListCreateAPIView):
+    queryset = Click.objects.order_by('-timestamp')[:5]
+    serializer_class = ClickSerializer

@@ -2,7 +2,7 @@
 {% block content %}
 
 <span class="d-flex justify-content-center">
-  <form method="post" action="{% url 'ClickCollectorCreateClick' %}">
+  <form id="clickForm">
     {% csrf_token %}
     <button class="btn btn-primary" type="submit">Click Me</button>
   </form>
@@ -17,14 +17,7 @@
       <th scope="col">Timestamp</th>
     </tr>
   </thead>
-  <tbody>
-    {% for click in clicks %}
-    <tr>
-      <th scope="row">{{click.id}}</th>
-      <td>{{click.timestamp|date:"F m, Y, H:i:s:u"}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
+  <tbody id="clickTableRows"></tbody>
 </table>
 
 {% endblock %}
@@ -32,22 +25,44 @@
 {% block javascript %}
 {{block.super}}
 <script>
+  const getClickRow = (clickObj) => {
+    return $("<tr>")
+      .append($("<th>").attr("scope", "row").text(clickObj.id))
+      .append($("<td>").text(clickObj.timestamp))
+  }
+
+  $.ajax({
+    url: "{% url 'ClickCollectorAPI' %}",
+    success: function(data){
+      $.each(data, (index, element) => {
+        var row = getClickRow(element)
+        $('#clickTableRows').append(row)
+      })
+    }
+  })
+  
+
   var host = window.location.host
   var ws = new WebSocket(`ws://${host}/ws/click/`)
 
-  ws.onopen = function(event){
+  ws.onopen = event => {
     console.log('opened', event);
+    $("#clickForm").submit(function(e){
+      e.preventDefault()
+      ws.send("CLICK")
+      console.log("SEND MSQ")
+    })
   }
 
-  ws.onmessage = function(event){
+  ws.onmessage = event => {
     console.log('message', event);
   }
 
-  ws.onclose = function(event){
+  ws.onclose = event => {
     console.log('close', event);
   }
 
-  ws.onerror = function(event){
+  ws.onerror = event => {
     console.log('error', event);
   }
 </script>

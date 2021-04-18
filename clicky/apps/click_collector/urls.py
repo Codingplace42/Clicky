@@ -8,8 +8,8 @@ urlpatterns = [
         name='ClickCollectorIndex'
     ),
     path(
-        'create-click/',
-        views.create_click,
-        name="ClickCollectorCreateClick"
+        'clickapi/',
+        views.ClickAPI.as_view(),
+        name="ClickCollectorAPI",
     )
 ]
