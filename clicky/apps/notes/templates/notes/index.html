@@ -4,24 +4,27 @@
 <span class="d-flex justify-content-center">
   <form id="createNoteForm" style="width: 75%;">
     <div class="form-group">
-      <label for="createNoteFormTitle">Title*</label>
-      <input type="text" class="form-control form-control-sm" id="createNoteFormTitle" name="title" placeholder="*">
+      <label for="createNoteFormTitle">Title</label>
+      <input type="text" class="form-control form-control-sm" id="createNoteFormTitle" name="title" placeholder="optional">
     </div>
     <div class="form-group">
-      <textarea class="form-control form-control-sm" id="createNoteFormBody" name="body" rows="3" placeholder="Description (optional)"></textarea>
+      <textarea class="form-control form-control-sm" id="createNoteFormBody" name="body" rows="3"></textarea>
+      <small class="form-text text-muted" id="createNoteFormBodyWordCounter">0 / 255</small>
     </div>
-    <button class="btn btn-outline-primary btn-block btn-sm" type="submit">Create</button>
+    <button class="btn btn-outline-primary btn-block btn-sm" type="submit" id="createNoteFormSubmitBtn" disabled>Create</button>
   </form>
 </span>
 
 <hr>
 
-<div class="card-columns">
+<div class="card-columns" id="noteColumns">
   <div class="card p-3">
     <div class="card-body">
       <h5 class="card-title">Card title that wraps to a new line</h5>
       <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+      <p class="card-text">
+        <small class="text-muted">Last updated 3 mins ago</small>
+      </p>
     </div>
   </div>
 </div>
@@ -31,23 +34,57 @@
 {% block javascript %}
 {{block.super}}
 <script>
+  const getNoteCard = (cardObj) => {
+    return $("<div>").addClass("card p-3")
+      .append($("<div>").addClass("card-body")
+        .append($('<h5>').addClass("card-title").text(cardObj.title))
+        .append($('<p>').addClass("card-text").text(cardObj.body))
+        .append($('<p>').addClass("card-text")
+          .append($('<small>').addClass("text-muted").text(cardObj.timestamp))
+        )
+      )
+  }
+
+  $.ajax({
+    url: "{% url 'NotesApi' %}",
+    success: function(data){
+      console.log(data)
+      $.each(data.results, (index, element) => {
+        var card = getNoteCard(element)
+        $('#noteColumns').append(card)
+      })
+    }
+  })
+
   var host = window.location.host
   var ws = new WebSocket(`ws://${host}/ws/notes/`)
 
+  $('#createNoteFormBody').keyup(() => {
+    $('#createNoteFormSubmitBtn').prop("disabled", $('#createNoteFormBody').val() === "")
+  })
+
+  $('#createNoteFormBody').keydown(() => {
+    $('#createNoteFormBodyWordCounter').text(`${$('#createNoteFormBody').val().length} / 255`)
+  })
+
+
   ws.onopen = event => {
-    console.log('opened', event);
     $("#createNoteForm").submit(function(e){
       e.preventDefault()
-      // ws.send({})
+      if ($('#createNoteFormBody').val().length >=255 || $('#createNoteFormTitle').val().length > 60){
+        return
+      }
+      ws.send(JSON.stringify({
+        title: $('#createNoteFormTitle').val(),
+        body: $('#createNoteFormBody').val(),
+      }))
+      $(this)[0].reset()
     })
   }
 
   ws.onmessage = event => {
-    if ($('#clickTableRows tr').length > 4){
-      $('#clickTableRows').children().last().remove();
-    }
-    var row = getClickRow(JSON.parse(event.data))
-    $('#clickTableRows').prepend(row)
+    var card = getNoteCard(JSON.parse(event.data))
+    $('#noteColumns').prepend(card)
   }
 
   ws.onclose = event => {

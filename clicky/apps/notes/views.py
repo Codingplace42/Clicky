@@ -16,6 +16,6 @@ class NotePagination(PageNumberPagination):
 
 
 class NoteAPI(ListAPIView):
-    queryset = Note.objects
+    queryset = Note.objects.all()
     serializer_class = NoteSerializer
     pagination_class = NotePagination

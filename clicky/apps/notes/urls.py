@@ -7,4 +7,9 @@ urlpatterns = [
         views.notes_index,
         name='NotesIndex'
     ),
+    path(
+        'notes-api',
+        views.NoteAPI.as_view(),
+        name='NotesApi'
+    )
 ]
