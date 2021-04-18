@@ -30,5 +30,32 @@
 
 {% block javascript %}
 {{block.super}}
+<script>
+  var host = window.location.host
+  var ws = new WebSocket(`ws://${host}/ws/notes/`)
 
+  ws.onopen = event => {
+    console.log('opened', event);
+    $("#createNoteForm").submit(function(e){
+      e.preventDefault()
+      // ws.send({})
+    })
+  }
+
+  ws.onmessage = event => {
+    if ($('#clickTableRows tr').length > 4){
+      $('#clickTableRows').children().last().remove();
+    }
+    var row = getClickRow(JSON.parse(event.data))
+    $('#clickTableRows').prepend(row)
+  }
+
+  ws.onclose = event => {
+    console.log('close', event);
+  }
+
+  ws.onerror = event => {
+    console.log('error', event);
+  }
+</script>
 {% endblock javascript %}
