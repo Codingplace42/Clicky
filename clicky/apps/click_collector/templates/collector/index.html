@@ -49,13 +49,14 @@
     console.log('opened', event);
     $("#clickForm").submit(function(e){
       e.preventDefault()
-      ws.send("CLICK")
-      console.log("SEND MSQ")
+      ws.send({})
     })
   }
 
   ws.onmessage = event => {
-    console.log('message', event);
+    $('#clickTableRows').children().last().remove();
+    var row = getClickRow(JSON.parse(event.data))
+    $('#clickTableRows').prepend(row)
   }
 
   ws.onclose = event => {

@@ -3,7 +3,9 @@ from .models import Click
 
 
 class ClickSerializer(serializers.ModelSerializer):
-    timestamp = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S.%f")
+    timestamp = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S.%f", read_only=True
+    )
 
     class Meta:
         model = Click
