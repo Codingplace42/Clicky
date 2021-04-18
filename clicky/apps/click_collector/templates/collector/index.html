@@ -1,0 +1,35 @@
+{% extends 'basic/main.html' %}
+{% block content %}
+
+<span class="d-flex justify-content-center">
+  <form method="post" action="{% url 'ClickCollectorCreateClick' %}">
+    {% csrf_token %}
+    <button class="btn btn-primary" type="submit">Click Me</button>
+  </form>
+</span>
+
+<hr>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for click in clicks %}
+    <tr>
+      <th scope="row">{{click.id}}</th>
+      <td>{{click.timestamp|date:"F m, Y, H:i:s:u"}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block javascript %}
+{{block.super}}
+
+{% endblock javascript %}
