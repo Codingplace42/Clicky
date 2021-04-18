@@ -1,0 +1,9 @@
+venv/
+env/
+virtualenv/
+.vscode/
+.idea/
+__pycache__/*
+*.pyc
+*.sqlite3
+.env

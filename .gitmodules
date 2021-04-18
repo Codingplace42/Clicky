@@ -1,0 +1,3 @@
+[submodule "clicky/static/sb-admin-2"]
+	path = clicky/static/sb-admin-2
+	url = https://github.com/StartBootstrap/startbootstrap-sb-admin-2.git
