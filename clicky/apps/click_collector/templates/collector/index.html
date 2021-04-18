@@ -54,7 +54,9 @@
   }
 
   ws.onmessage = event => {
-    $('#clickTableRows').children().last().remove();
+    if ($('#clickTableRows tr').length > 4){
+      $('#clickTableRows').children().last().remove();
+    }
     var row = getClickRow(JSON.parse(event.data))
     $('#clickTableRows').prepend(row)
   }
