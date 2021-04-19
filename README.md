@@ -1,7 +1,14 @@
 # README
-This project is a basic Click Counting example in Django Channels.
-Many users can click from different hosts and will get realtime updates on
-current click count and last timestamp.
+This project provides some basic realtime usecases based on Django &
+Django Channels. Currently two main usecases are included:
+1. World Wide Realtime Click Counter
+2. Google Note Clone Lite (Realtime Synchronization for world wide users)
+
+The Tech-Stack is based on Python, Django, Postgres and Redis.
+This repository includes also a Dockerfile and a docker composition for easy
+kick-starts.
+
+Have fun & Play around.
 
 # Requirements & Setup
 There are two setup possibilities included:
