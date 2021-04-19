@@ -3,7 +3,6 @@
 
 <span class="d-flex justify-content-center">
   <form id="clickForm">
-    {% csrf_token %}
     <button class="btn btn-primary" type="submit">Click Me</button>
   </form>
 </span>
@@ -46,7 +45,6 @@
   var ws = new WebSocket(`ws://${host}/ws/click/`)
 
   ws.onopen = event => {
-    console.log('opened', event);
     $("#clickForm").submit(function(e){
       e.preventDefault()
       ws.send({})
