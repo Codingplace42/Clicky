@@ -75,6 +75,7 @@
   ws.onmessage = event => {
     var card = getNoteCard(JSON.parse(event.data))
     $('#noteColumns').prepend(card)
+    $('#createNoteFormSubmitBtn').prop("disabled", true)
   }
 
   ws.onclose = event => {
